@@ -1,0 +1,23 @@
+{
+  "name": "@mhao/util",
+  "version": "1.0.0",
+  "description": "自动函数",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mmhao/util.git"
+  },
+  "keywords": [
+    "util"
+  ],
+  "author": "mhao",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
