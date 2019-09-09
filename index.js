@@ -2,60 +2,32 @@ var path = require("path");
 var fs = require("fs");
 const util = {};
 
-//获取当前路径下所有文件夹和目录，bool为真就是获取所有文件
-function getAllDir(dirPath, bool) {
-    var dirPath = dirPath || path.resolve(__dirname, "./"); 
-    var results = []; //存放得到的目录或文件
+//获取当前路径下所有文件夹
+function getDirs(entry, options) {
+    var entryPath = entry || path.resolve(__dirname, "./"); 
+    var list = []; //存放得到的目录
+    var opts = Object.assign({}, options || {});
 
-    var pa = fs.readdirSync(dirPath);
-    pa.forEach(function(ele,index){
-        var info = fs.statSync(dirPath+"/"+ele);
-        if (bool) {
-            if(!info.isDirectory()){
-                results.push(dirPath+"/"+ele);
-            }
-            else {
-                results = results.concat(getAllDir(dirPath+"/"+ele, true));
-            }
-        }
-        else {
-            if(info.isDirectory()){
-                results.push(dirPath+"/"+ele);
-                results = results.concat(getAllDir(dirPath+"/"+ele));
-            }
-        }
-        
-    });
-    return results;
-}
-util.getAllDir = getAllDir;
+    var files = fs.readdirSync(entryPath);
+    var reg = opts.reg || /''/g;
 
-//获取当前目录下所有带某个名称的目录
-function searchDirPath(dir, options) {
-    var options_def = {
-        dirName: "sprites",
-    };
-    var opts = Object.assign({}, options_def, options || {});
-    var results = [];
-    var list = fs.readdirSync(dir);
-    var regTest = new RegExp(opts.dirName + "$");
-    //console.log(list)
-    list.forEach(function(file) {
-        file = dir + path.sep + file;
+    files.forEach(function(item,index){
+        var filePath = entryPath + path.sep + item;
+        var fileInfo = fs.statSync(filePath);
 
-        var stat = fs.statSync(file)
-        if (stat && stat.isDirectory()) {
-            if (regTest.test(file)) {
-                results.push(file);
+        if(fileInfo.isDirectory()){
+            var str = item.split(path.sep).pop()
+            if (reg.test(str)) {
+                list.push(filePath);
             }
-            else {
-                results = results.concat(searchDirPath(file, opts));
-            }
+            list = list.concat(getDirs(filePath, opts));
         }
     });
-    return results
+
+    return list
+
 }
-util.searchDirPath = searchDirPath;
+util.getDirs = getDirs;
 module.exports = util;
 
 
